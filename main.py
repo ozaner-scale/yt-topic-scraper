@@ -68,6 +68,7 @@ def main():
     parser.add_argument('n', type=int, help='Number of videos to retrieve with transcripts')
     parser.add_argument('--api_key', type=str, help='YouTube Data API key')
     parser.add_argument('-j', '--json', action='store_true', help='Output results in JSON format')
+    parser.add_argument('-o', '--out', type=str, help='Output file path')
 
     args = parser.parse_args()
 
@@ -119,9 +120,21 @@ def main():
         print(f"Successfully retrieved {len(results)} videos with transcripts.")
 
     if results:
-        if args.json:
-            # Output as JSON
-            print(json.dumps(results, indent=4, ensure_ascii=False))
+        if args.out:
+            try:
+                with open(args.out, 'w', encoding='utf-8') as f:
+                    if args.json:
+                        # Output as JSON
+                        json.dump(results, f, indent=4, ensure_ascii=False)
+                    else:
+                        # Pretty console output
+                        for video in results:
+                            f.write(f"\nVideo {video['video_number']}: {video['title']}\n")
+                            f.write(f"Video ID: {video['video_id']}\n")
+                            f.write(f"Transcript:\n{video['transcript']}\n{'-'*80}\n")
+                print(f"Output successfully saved to '{args.out}'.")
+            except Exception as e:
+                print(f"An error occurred while writing to the file: {str(e)}")
         else:
             # Pretty console output
             for video in results:

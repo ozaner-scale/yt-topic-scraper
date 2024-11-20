@@ -87,3 +87,4 @@ uv run main.py [-h] [--api_key API_KEY] [-j] query n
 - `n`: the number of results to pull. The script pulls the top n results form youtube based on your query. *REQUIRED*
 - `--api-key`: The script assumes the YT_API_KEY is present in the environment variables. If this flag is passed however, that key will be overridden. *OPTIONAL*
 - `-j`: By default the program outputs text fit for viewing in the terminal by a human. For more easily parsable json output, use this flag. *OPTIONAL*
+- `-o`: The output file path. if omitted, the results will not be saved to a file, and will instead be printed to the terminal.
