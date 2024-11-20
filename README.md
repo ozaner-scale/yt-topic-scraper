@@ -20,7 +20,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 2. Then just run the script with the appropriate cmdline args:
 ```sh
-uv run ./main.py Macroeconomics 3 --api_key API_KEY
+uv run main.py Macroeconomics 3
 ```
 
 Output:
@@ -71,3 +71,19 @@ catch the mistakes, as well. OK, WEO has less mistakes
 than the Wall Street Journal, but you will catch
 mistakes, you'll see, you'll be proud of those.
 ```
+
+## Command line flags
+You can run the following for help:
+```sh
+uv run main.py -h
+```
+
+You'll find that the format for using this script is as follows:
+```sh
+uv run main.py [-h] [--api_key API_KEY] [-j] query n
+```
+
+- `query`: This is the topic you want videos to be from. It is essentially a normal youtube search. Use double quotes "" if the query has spaces. *REQUIRED*
+- `n`: the number of results to pull. The script pulls the top n results form youtube based on your query. *REQUIRED*
+- `--api-key`: The script assumes the YT_API_KEY is present in the environment variables. If this flag is passed however, that key will be overridden. *OPTIONAL*
+- `-j`: By default the program outputs text fit for viewing in the terminal by a human. For more easily parsable json output, use this flag. *OPTIONAL*
