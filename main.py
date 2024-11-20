@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import json
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
@@ -50,6 +51,7 @@ def main():
     parser.add_argument('query', type=str, help='Topic to search for')
     parser.add_argument('n', type=int, help='Number of videos to retrieve')
     parser.add_argument('--api_key', type=str, help='YouTube Data API key')
+    parser.add_argument('-j', '--json', action='store_true', help='Output results in JSON format')
     
     args = parser.parse_args()
     
@@ -67,11 +69,26 @@ def main():
         print("No videos found.")
         sys.exit(0)
     
+    results = []
+    
     for idx, video in enumerate(videos, start=1):
-        print(f"\nVideo {idx}: {video['title']}")
-        print(f"Video ID: {video['id']}")
-        transcript = get_transcript(video['id'])
-        print(f"Transcript:\n{transcript}\n{'-'*80}")
+        video_info = {
+            'video_number': idx,
+            'title': video['title'],
+            'video_id': video['id'],
+            'transcript': get_transcript(video['id'])
+        }
+        results.append(video_info)
+    
+    if args.json:
+        # Output as JSON
+        print(json.dumps(results, indent=4, ensure_ascii=False))
+    else:
+        # Pretty console output
+        for video in results:
+            print(f"\nVideo {video['video_number']}: {video['title']}")
+            print(f"Video ID: {video['video_id']}")
+            print(f"Transcript:\n{video['transcript']}\n{'-'*80}")
 
 if __name__ == "__main__":
     main()
