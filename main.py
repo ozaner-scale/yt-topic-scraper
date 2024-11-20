@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 
@@ -43,14 +44,22 @@ def get_transcript(video_id):
         return f"An error occurred: {str(e)}"
 
 def main():
+    load_dotenv()
+
     parser = argparse.ArgumentParser(description="Search YouTube videos and retrieve their transcripts.")
     parser.add_argument('query', type=str, help='Topic to search for')
     parser.add_argument('n', type=int, help='Number of videos to retrieve')
-    parser.add_argument('--api_key', type=str, help='YouTube Data API key', required=True)
+    parser.add_argument('--api_key', type=str, help='YouTube Data API key')
     
     args = parser.parse_args()
     
-    youtube = get_youtube_service(args.api_key)
+    # Retrieve API key from argument or environment variable
+    api_key = args.api_key or os.getenv('YT_API_KEY')
+    if not api_key:
+        print("Error: You must provide a YouTube Data API key either via the --api_key argument or the YT_API_KEY environment variable.")
+        sys.exit(1)
+    
+    youtube = get_youtube_service(api_key)
     print(f"Searching for '{args.query}' on YouTube...")
     videos = search_videos(youtube, args.query, args.n)
     
